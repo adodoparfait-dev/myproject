@@ -1,7 +1,11 @@
 @import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
 }
 
 .viz-root {
@@ -11,14 +15,12 @@
   --viz-good: #0ca30c;
   --viz-critical: #d03b3b;
 }
-@media (prefers-color-scheme: dark) {
-  .viz-root {
-    --viz-text-secondary: #c3c2b7;
-    --viz-text-muted: #898781;
-    --viz-grid: #2c2c2a;
-    --viz-good: #0ca30c;
-    --viz-critical: #e66767;
-  }
+.dark .viz-root {
+  --viz-text-secondary: #c3c2b7;
+  --viz-text-muted: #898781;
+  --viz-grid: #2c2c2a;
+  --viz-good: #0ca30c;
+  --viz-critical: #e66767;
 }
 
 html,

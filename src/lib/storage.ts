@@ -30,8 +30,12 @@ export const storage = {
   loadReviewLogs: (): ReviewLog[] => load(KEYS.reviewLogs, []),
   saveReviewLogs: (logs: ReviewLog[]) => save(KEYS.reviewLogs, logs),
 
-  loadSettings: (): Settings =>
-    load(KEYS.settings, { anthropicApiKey: "", model: "claude-sonnet-5" }),
+  loadSettings: (): Settings => ({
+    anthropicApiKey: "",
+    model: "claude-sonnet-5",
+    theme: "system",
+    ...load<Partial<Settings>>(KEYS.settings, {}),
+  }),
   saveSettings: (settings: Settings) => save(KEYS.settings, settings),
 };
 

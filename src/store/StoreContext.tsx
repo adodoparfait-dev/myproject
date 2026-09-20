@@ -29,6 +29,8 @@ interface StoreValue {
 
   updateSettings: (patch: Partial<Settings>) => void;
 
+  importData: (data: { notes: Note[]; cards: Card[]; reviewLogs: ReviewLog[] }) => void;
+
   allTags: string[];
 }
 
@@ -147,6 +149,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     persistSettings({ ...settings, ...patch });
   }
 
+  function importData(data: { notes: Note[]; cards: Card[]; reviewLogs: ReviewLog[] }) {
+    persistNotes(data.notes);
+    persistCards(data.cards);
+    persistReviewLogs(data.reviewLogs);
+  }
+
   const allTags = useMemo(() => {
     const set = new Set<string>();
     for (const n of notes) for (const t of n.tags) set.add(t);
@@ -168,6 +176,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     deleteCard,
     reviewCard,
     updateSettings,
+    importData,
     allTags,
   };
 

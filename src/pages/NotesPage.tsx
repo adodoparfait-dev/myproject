@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { ClaudeApiError, generateFlashcardsFromNote, type GeneratedCard } from "../lib/claude";
 import { renderMarkdown } from "../lib/markdown";
 import { useStore } from "../store/StoreContext";
-import type { Note } from "../types";
+import type { Card, Note } from "../types";
 
 function parseTags(input: string): string[] {
   return Array.from(
@@ -17,7 +17,8 @@ function parseTags(input: string): string[] {
 }
 
 export default function NotesPage({ onGenerateGoReview }: { onGenerateGoReview: () => void }) {
-  const { notes, addNote, updateNote, deleteNote, addCards, settings } = useStore();
+  const { notes, cards, addNote, updateNote, deleteNote, addCard, addCards, updateCard, deleteCard, settings } =
+    useStore();
   const [selectedId, setSelectedId] = useState<string | null>(notes[0]?.id ?? null);
   const [query, setQuery] = useState("");
   const [preview, setPreview] = useState(false);
@@ -38,6 +39,15 @@ export default function NotesPage({ onGenerateGoReview }: { onGenerateGoReview: 
   }, [notes, query]);
 
   const selected = notes.find((n) => n.id === selectedId) ?? null;
+  const noteCards = useMemo(
+    () => cards.filter((c) => c.noteId === selectedId),
+    [cards, selectedId],
+  );
+
+  function handleAddManualCard() {
+    if (!selected) return;
+    addCard({ noteId: selected.id, front: "", back: "", tags: selected.tags });
+  }
 
   function handleCreateNote() {
     const note = addNote("Nouvelle note", "", []);
@@ -229,9 +239,75 @@ export default function NotesPage({ onGenerateGoReview }: { onGenerateGoReview: 
                 />
               )}
             </div>
+
+            <div className="max-h-64 shrink-0 overflow-y-auto border-t border-slate-200 p-3 dark:border-slate-800">
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Cartes ({noteCards.length})
+                </h3>
+                <button
+                  onClick={handleAddManualCard}
+                  className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                >
+                  <Plus size={12} /> Ajouter une carte
+                </button>
+              </div>
+              {noteCards.length === 0 ? (
+                <p className="text-xs text-slate-400">
+                  Aucune carte pour cette note. Génère-les avec l'IA ou ajoute-en une manuellement.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {noteCards.map((card) => (
+                    <CardRow
+                      key={card.id}
+                      card={card}
+                      onUpdate={(patch) => updateCard(card.id, patch)}
+                      onDelete={() => deleteCard(card.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+function CardRow({
+  card,
+  onUpdate,
+  onDelete,
+}: {
+  card: Card;
+  onUpdate: (patch: Partial<Pick<Card, "front" | "back">>) => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="group flex items-start gap-2 rounded-lg border border-slate-200 p-2 dark:border-slate-800">
+      <div className="min-w-0 flex-1 space-y-1">
+        <input
+          defaultValue={card.front}
+          onBlur={(e) => onUpdate({ front: e.target.value })}
+          placeholder="Question"
+          className="w-full bg-transparent text-sm font-medium outline-none placeholder:font-normal placeholder:text-slate-400"
+        />
+        <input
+          defaultValue={card.back}
+          onBlur={(e) => onUpdate({ back: e.target.value })}
+          placeholder="Réponse"
+          className="w-full bg-transparent text-sm text-slate-500 outline-none placeholder:text-slate-400 dark:text-slate-400"
+        />
+      </div>
+      <button
+        onClick={onDelete}
+        className="shrink-0 rounded-md p-1 text-slate-300 hover:bg-red-50 hover:text-red-500 dark:text-slate-600 dark:hover:bg-red-950/40"
+        title="Supprimer la carte"
+      >
+        <Trash2 size={14} />
+      </button>
     </div>
   );
 }

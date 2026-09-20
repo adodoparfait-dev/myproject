@@ -1,6 +1,7 @@
-import { Eye, EyeOff, TriangleAlert } from "lucide-react";
-import { useState } from "react";
+import { Download, Eye, EyeOff, Monitor, Moon, Sun, TriangleAlert, Upload } from "lucide-react";
+import { useRef, useState, type ChangeEvent } from "react";
 import { useStore } from "../store/StoreContext";
+import type { Theme } from "../types";
 
 const MODELS = [
   { id: "claude-sonnet-5", label: "Claude Sonnet 5 (équilibré, recommandé)" },
@@ -8,9 +9,60 @@ const MODELS = [
   { id: "claude-opus-5", label: "Claude Opus 5 (le plus capable)" },
 ];
 
+const THEMES: { id: Theme; label: string; icon: typeof Sun }[] = [
+  { id: "light", label: "Clair", icon: Sun },
+  { id: "dark", label: "Sombre", icon: Moon },
+  { id: "system", label: "Système", icon: Monitor },
+];
+
 export default function SettingsPage() {
-  const { settings, updateSettings } = useStore();
+  const { settings, updateSettings, notes, cards, reviewLogs, importData } = useStore();
   const [showKey, setShowKey] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleExport() {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      notes,
+      cards,
+      reviewLogs,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `memo-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleImportClick() {
+    setImportError(null);
+    fileInputRef.current?.click();
+  }
+
+  async function handleImportFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!Array.isArray(data.notes) || !Array.isArray(data.cards) || !Array.isArray(data.reviewLogs)) {
+        throw new Error("Format invalide.");
+      }
+      const confirmed = confirm(
+        `Importer ${data.notes.length} note(s) et ${data.cards.length} carte(s) ? Cela remplacera toutes tes données actuelles dans cette appli.`,
+      );
+      if (!confirmed) return;
+      importData({ notes: data.notes, cards: data.cards, reviewLogs: data.reviewLogs });
+    } catch {
+      setImportError("Impossible de lire ce fichier. Vérifie qu'il s'agit bien d'un export Memo valide.");
+    }
+  }
 
   return (
     <div className="mx-auto max-w-xl p-6">
@@ -59,7 +111,7 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+      <section className="mb-6 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
         <h2 className="mb-3 text-sm font-medium">Modèle utilisé pour la génération</h2>
         <div className="space-y-2">
           {MODELS.map((m) => (
@@ -77,6 +129,59 @@ export default function SettingsPage() {
             </label>
           ))}
         </div>
+      </section>
+
+      <section className="mb-6 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+        <h2 className="mb-3 text-sm font-medium">Apparence</h2>
+        <div className="grid grid-cols-3 gap-2">
+          {THEMES.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => updateSettings({ theme: id })}
+              className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs font-medium ${
+                settings.theme === id
+                  ? "border-indigo-400 bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-300"
+                  : "border-slate-200 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+              }`}
+            >
+              <Icon size={18} />
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+        <h2 className="mb-1 text-sm font-medium">Sauvegarde des données</h2>
+        <p className="mb-3 text-xs text-slate-400">
+          Tes notes et cartes ne vivent que dans ce navigateur. Exporte-les
+          régulièrement pour ne rien perdre, ou pour les transférer vers un autre
+          appareil.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            <Download size={14} />
+            Exporter en JSON
+          </button>
+          <button
+            onClick={handleImportClick}
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            <Upload size={14} />
+            Importer un fichier
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json"
+            onChange={handleImportFile}
+            className="hidden"
+          />
+        </div>
+        {importError && <p className="mt-2 text-xs text-red-500">{importError}</p>}
       </section>
     </div>
   );

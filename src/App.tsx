@@ -5,6 +5,7 @@ import ReviewPage from "./pages/ReviewPage";
 import SettingsPage from "./pages/SettingsPage";
 import StatsPage from "./pages/StatsPage";
 import { useStore } from "./store/StoreContext";
+import { useApplyTheme } from "./hooks/useApplyTheme";
 import { isDue } from "./lib/srs";
 
 type View = "notes" | "review" | "stats" | "settings";
@@ -18,8 +19,9 @@ const NAV: { id: View; label: string; icon: typeof BookOpen }[] = [
 
 export default function App() {
   const [view, setView] = useState<View>("notes");
-  const { cards } = useStore();
+  const { cards, settings } = useStore();
   const dueCount = cards.filter((c) => isDue(c)).length;
+  useApplyTheme(settings.theme);
 
   return (
     <div className="flex h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">

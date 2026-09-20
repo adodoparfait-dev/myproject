@@ -34,7 +34,10 @@ export interface ReviewLog {
   newInterval: number;
 }
 
+export type Theme = "light" | "dark" | "system";
+
 export interface Settings {
   anthropicApiKey: string;
   model: string;
+  theme: Theme;
 }
