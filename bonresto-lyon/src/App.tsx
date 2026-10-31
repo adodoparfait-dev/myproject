@@ -1,5 +1,6 @@
-import { Menu, UtensilsCrossed, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import Logo from "./components/Logo";
 import HomePage from "./pages/HomePage";
 import RestaurantsPage from "./pages/RestaurantsPage";
 import RestaurantDetailPage from "./pages/RestaurantDetailPage";
@@ -37,8 +38,8 @@ export default function App() {
             onClick={() => navigate({ name: "accueil" })}
             className="flex items-center gap-2 font-display text-xl font-semibold text-[var(--wine)]"
           >
-            <UtensilsCrossed size={22} strokeWidth={2.2} />
-            BonResto
+            <Logo size={26} />
+            LeBonResto
           </button>
 
           <nav className="hidden items-center gap-6 md:flex">
@@ -102,7 +103,10 @@ export default function App() {
 
       <footer className="border-t border-[var(--wine)]/10 bg-[var(--cream-soft)] py-8">
         <div className="mx-auto max-w-6xl px-4 text-center text-sm text-[var(--ink-soft)] sm:px-6">
-          <p className="font-display text-base text-[var(--wine)]">BonResto</p>
+          <div className="flex items-center justify-center gap-1.5">
+            <Logo size={18} />
+            <p className="font-display text-base text-[var(--wine)]">LeBonResto</p>
+          </div>
           <p className="mt-1">La commande locale, par et pour les restaurateurs lyonnais.</p>
           <p className="mt-3 text-xs">Prototype de démonstration — Lyon, France.</p>
         </div>

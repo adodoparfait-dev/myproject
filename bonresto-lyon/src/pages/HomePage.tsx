@@ -74,7 +74,7 @@ export default function HomePage({ navigate }: { navigate: (v: View) => void }) 
             </ul>
           </div>
           <div className="rounded-2xl border border-[var(--wine)]/10 bg-[var(--wine)] p-6 text-[var(--cream)]">
-            <h2 className="font-display text-xl font-semibold">Ce que propose BonResto</h2>
+            <h2 className="font-display text-xl font-semibold">Ce que propose LeBonResto</h2>
             <ul className="mt-4 space-y-3 text-[var(--cream)]/90">
               <li>— Un prix fixe mensuel, jamais de commission sur les ventes.</li>
               <li>— Le restaurateur garde ses clients : emails, promos, fidélité.</li>

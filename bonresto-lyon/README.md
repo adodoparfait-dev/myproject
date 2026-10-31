@@ -1,4 +1,4 @@
-# BonResto Lyon — prototype
+# LeBonResto — prototype
 
 Prototype codé (React/TypeScript/Tailwind) pour visualiser le concept d'une
 alternative locale à Uber Eats / Deliveroo pour les restaurants lyonnais :
