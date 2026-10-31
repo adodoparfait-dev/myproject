@@ -42,7 +42,7 @@ export const RESTAURANTS: Restaurant[] = [
     quartier: "Vieux Lyon",
     address: "12 rue du Bœuf, 69005 Lyon",
     pitch: "Le bouchon familial depuis 1987 : quenelles, tablier de sapeur et vin en pichet.",
-    color: "#7a1f2b",
+    color: "#3f2a18",
     pickupMinutes: 25,
     menu: [
       { id: "1", name: "Quenelle de brochet, sauce Nantua", description: "Servie avec riz pilaf", price: 16.5, category: "Plats" },
@@ -74,7 +74,7 @@ export const RESTAURANTS: Restaurant[] = [
     quartier: "Guillotière",
     address: "27 rue Pasteur, 69007 Lyon",
     pitch: "Sandwichs vietnamiens croustillants, préparés devant vous en moins de 10 minutes.",
-    color: "#b9872f",
+    color: "#a8542e",
     pickupMinutes: 10,
     menu: [
       { id: "1", name: "Bánh mì poulet caramel", description: "Coriandre, carotte, daikon, piment", price: 7.5, category: "Sandwichs" },
@@ -122,7 +122,7 @@ export const RESTAURANTS: Restaurant[] = [
     quartier: "Presqu'île",
     address: "9 rue des Marronniers, 69002 Lyon",
     pitch: "La tradition du bouchon revisitée par un jeune chef formé à l'Institut Paul Bocuse.",
-    color: "#7a1f2b",
+    color: "#6b4423",
     pickupMinutes: 30,
     menu: [
       { id: "1", name: "Quenelle revisitée, bisque de homard", description: "Création maison", price: 19, category: "Plats" },
