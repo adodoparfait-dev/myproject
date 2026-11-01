@@ -1,0 +1,107 @@
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
+.viz-root {
+  --viz-text-secondary: #52514e;
+  --viz-text-muted: #898781;
+  --viz-grid: #e1e0d9;
+  --viz-good: #0ca30c;
+  --viz-critical: #d03b3b;
+}
+.dark .viz-root {
+  --viz-text-secondary: #c3c2b7;
+  --viz-text-muted: #898781;
+  --viz-grid: #2c2c2a;
+  --viz-good: #0ca30c;
+  --viz-critical: #e66767;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(148 163 184 / 0.4);
+  border-radius: 9999px;
+}
+
+.prose-note :where(h1, h2, h3) {
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+}
+.prose-note h1 {
+  font-size: 1.4em;
+}
+.prose-note h2 {
+  font-size: 1.2em;
+}
+.prose-note h3 {
+  font-size: 1.05em;
+}
+.prose-note p {
+  margin: 0.5em 0;
+  line-height: 1.6;
+}
+.prose-note ul,
+.prose-note ol {
+  margin: 0.5em 0;
+  padding-left: 1.4em;
+}
+.prose-note ul {
+  list-style: disc;
+}
+.prose-note ol {
+  list-style: decimal;
+}
+.prose-note code {
+  background: rgb(148 163 184 / 0.2);
+  padding: 0.1em 0.35em;
+  border-radius: 0.3em;
+  font-size: 0.9em;
+}
+.prose-note pre {
+  background: rgb(15 23 42 / 0.9);
+  color: #e2e8f0;
+  padding: 0.75em 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 0.6em 0;
+}
+.prose-note pre code {
+  background: none;
+  padding: 0;
+}
+.prose-note blockquote {
+  border-left: 3px solid rgb(99 102 241 / 0.5);
+  padding-left: 0.8em;
+  color: rgb(100 116 139);
+  margin: 0.6em 0;
+}
+.prose-note a {
+  color: rgb(99 102 241);
+  text-decoration: underline;
+}
