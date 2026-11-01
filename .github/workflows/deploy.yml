@@ -24,26 +24,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            bonresto-lyon/package-lock.json
-
-      - name: Build Memo
-        run: |
-          npm ci
-          npm run build -- --base=/${{ github.event.repository.name }}/
-
-      - name: Build LeBonResto
-        working-directory: bonresto-lyon
-        run: |
-          npm ci
-          npm run build -- --base=/${{ github.event.repository.name }}/lebonresto/
-
-      - name: Combine sites
-        run: |
-          mkdir -p dist/lebonresto
-          cp -r bonresto-lyon/dist/. dist/lebonresto/
-
+      - run: npm ci
+      - run: npm run build -- --base=/${{ github.event.repository.name }}/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
