@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - claude/coding-capabilities-5ut28p
   workflow_dispatch: {}
 
 permissions:
@@ -25,8 +24,26 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run build -- --base=/${{ github.event.repository.name }}/
+          cache-dependency-path: |
+            package-lock.json
+            bonresto-lyon/package-lock.json
+
+      - name: Build Memo
+        run: |
+          npm ci
+          npm run build -- --base=/${{ github.event.repository.name }}/
+
+      - name: Build LeBonResto
+        working-directory: bonresto-lyon
+        run: |
+          npm ci
+          npm run build -- --base=/${{ github.event.repository.name }}/lebonresto/
+
+      - name: Combine sites
+        run: |
+          mkdir -p dist/lebonresto
+          cp -r bonresto-lyon/dist/. dist/lebonresto/
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
